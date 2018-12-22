@@ -56,6 +56,7 @@ def check_for_new_cards(exp):
 
 
 if __name__ == '__main__':
+    db.create_all()
     if len(sys.argv) > 1:
         code = sys.argv[1]
         print(code)
