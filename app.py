@@ -56,7 +56,9 @@ def check_for_new_cards(exp):
 
 
 if __name__ == '__main__':
-    if sys.argv[0]:
-        check_for_new_cards(sys.argv[0])
+    if len(sys.argv) > 1:
+        code = sys.argv[1]
+        print(code)
+        check_for_new_cards(code)
     else:
         app.run()
