@@ -2,18 +2,20 @@
 
 import argparse
 
-from scryfall import ScryfallClient
-from scryfall.models import Card, Set
-
+from config import MtgSpoilerConfig
 from database import Database
-
 from manager import Manager
+from models import Card, Set
+from scryfall import ScryfallClient
+from slackclient import SlackClient
 
 
 def get_manager() -> Manager:
+    config = MtgSpoilerConfig.from_env()
     api = ScryfallClient()
-    db = Database()
-    return Manager(db, api, None)
+    db = Database(config.db_uri)
+    slack = SlackClient(config.slack_webhook_url, config.slack_channel)
+    return Manager(config, db, api, slack)
 
 def parse_args():
     parser = argparse.ArgumentParser()

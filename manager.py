@@ -1,16 +1,16 @@
-
+from config import MtgSpoilerConfig
 from database import Database
 from scryfall import ScryfallClient
-
-class SlackClient:
-    pass
+from slackclient import SlackClient
 
 class Manager:
+    config: MtgSpoilerConfig
     db: Database
     api: ScryfallClient
     slack: SlackClient
 
-    def __init__(self, db: Database, api: ScryfallClient, slack: SlackClient):
+    def __init__(self, config: MtgSpoilerConfig, db: Database, api: ScryfallClient, slack: SlackClient):
+        self.config = config
         self.db = db
         self.api = api
         self.slack = slack
@@ -32,4 +32,13 @@ class Manager:
 
 
     def check_for_spoilers(self):
-        pass
+        for set_ in self.db.get_watched_sets():
+            self.check_set_for_spoilers(set_.code)
+
+    def check_set_for_spoilers(self, code):
+        all_cards = self.api.get_cards_from_set(code)
+        previous_cards = self.db.get_cards_from_set(code)
+        previous_card_names = [card.name for card in previous_cards]
+        new_cards = list(filter(lambda card: card.name in previous_card_names, all_cards))
+        
+        self.slack.post_cards(new_cards)
