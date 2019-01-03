@@ -9,8 +9,9 @@ flask-sqlalchemy = "*"
 requests = "*"
 gunicorn = "*"
 "psycopg2" = "*"
+sqlalchemy = "*"
 
 [dev-packages]
 
 [requires]
-python_version = "3.6"
+python_version = "3.7"
