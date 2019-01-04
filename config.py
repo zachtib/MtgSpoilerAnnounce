@@ -18,7 +18,9 @@ class MtgSpoilerConfig:
             db_uri = environ.get('DATABASE_URL', 'sqlite:///:memory:'),
             slack_webhook_url = environ.get('SLACK_WEBHOOK_URL', ''),
             slack_channel = environ.get('SLACK_CHANNEL', 'bot-testing'),
-            debug = len(environ.get('DEBUG', '')) > 0
+            debug = len(environ.get('DEBUG', '')) > 0,
+            batch_threshold = int(environ.get('BATCH_THRESHOLD', -1)),
+            batch_channel = environ.get('BATCH_CHANNEL', '')
         )
         print(f'Loaded configuration: {config}')
         return config

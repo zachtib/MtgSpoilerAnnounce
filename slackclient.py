@@ -22,7 +22,7 @@ class SlackClient:
 
     @property
     def batch_enabled(self):
-        return self.batch_threshold is not None and self.batch_channel is not None
+        return self.batch_threshold > 0 and self.batch_channel is not None
 
 
     def post_cards(self, cards: List[Card]):
