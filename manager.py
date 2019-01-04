@@ -43,8 +43,7 @@ class Manager:
 
     def check_set_for_spoilers(self, code):
         all_cards = self.api.get_cards_from_set(code)
-        previous_cards = self.db.get_cards_from_set(code)
-        previous_card_names = [card.name for card in previous_cards]
-        new_cards = list(filter(lambda card: card.name in previous_card_names, all_cards))
+        previous_card_names = [card.name for card in self.db.get_cards_from_set(code)]
+        new_cards = [card for card in all_cards if card.name not in previous_card_names]
         
         self.slack.post_cards(new_cards)
