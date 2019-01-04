@@ -1,6 +1,8 @@
 from typing import List
 
+import requests
 from models import Card, Set
+
 
 class ScryfallClient:
     def get_cards_from_set(self, code: str) -> List[Card]:
