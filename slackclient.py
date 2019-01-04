@@ -27,15 +27,15 @@ class SlackClient:
             self._post_batch(cards)
         else:
             for card in cards:
-                self._post_card(self._channel, card)
+                self._post_card(self.channel, card)
 
     
     def _post_batch(self, cards: List[Card]):
         for card in cards:
-            self._post_card(self._batch_channel, card)
+            self._post_card(self.batch_channel, card)
 
-        self._post(self._channel, {
-            'text': f'{len(cards)} new cards posted to #{self._batch_channel}',
+        self._post(self.channel, {
+            'text': f'{len(cards)} new cards posted to #{self.batch_channel}',
         })
 
 
