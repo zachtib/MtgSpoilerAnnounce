@@ -6,13 +6,21 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from os import environ
 
+from mtgspoilers import get_manager
+from config import MtgSpoilerConfig
+from database import Database
+from manager import Manager
+from models import Card, Set
+from scryfall import ScryfallClient
+from slackclient import SlackClient
+
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = environ['DATABASE_URL']
 db = SQLAlchemy(app)
 
-slack_webhook_url = environ['SLACK_WEBHOOK_URL']
-channel = environ['SLACK_CHANNEL']
-
+config = MtgSpoilerConfig.from_env()
+api = ScryfallClient()
+slack = SlackClient(config.slack_webhook_url, config.slack_channel)
 
 class Card(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -34,24 +42,17 @@ def hello_world(exp):
     return 'OK'
 
 
-def post_card(card):
-    response = requests.post(slack_webhook_url, data=str({
-        'channel': channel,
-        'text': f'{card["name"]}: {card["image_uris"]["normal"]}',
-    }))
-
-
 def check_for_new_cards(exp):
-    r = requests.get(f'https://api.scryfall.com/cards/search?order=spoiled&q=e={exp}&unique=prints')
-    if r.status_code != 200:
-        return
-    json = r.json()
+    api_cards = api.get_cards_from_set(exp)
     known_cards = Card.query.filter_by(expansion=exp).all()
     known_card_names = [card.name for card in known_cards]
-    for card in json['data']:
-        if card['name'] not in known_card_names:
-            post_card(card)
-            db.session.add(Card(name=card['name'], expansion=exp))
+
+    new_cards = list(filter(lambda x: x.name not in known_card_names, api_cards))
+
+    slack.post_cards(new_cards)
+    for card in new_cards:
+        db.session.add(Card(name=card.name, expansion=exp))
+
     db.session.commit()
 
 
