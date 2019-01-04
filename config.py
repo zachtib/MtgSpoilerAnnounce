@@ -1,9 +1,9 @@
 from __future__ import annotations
+from dataclasses import dataclass
 from os import environ
 
+@dataclass
 class MtgSpoilerConfig:
-
-    __create_key = object()
 
     db_uri: str
     slack_webhook_url: str
@@ -12,12 +12,11 @@ class MtgSpoilerConfig:
 
     @classmethod
     def from_env(cls) -> MtgSpoilerConfig:
-        config = MtgSpoilerConfig
-        config.db_uri = environ.get('DATABASE_URL', 'sqlite://example.db')
-        config.slack_webhook_url = environ['SLACK_WEBHOOK_URL']
-        config.slack_channel = environ['SLACK_CHANNEL']
-        config.debug = len(environ.get('DEBUG', '')) > 0
+        config = MtgSpoilerConfig(
+            db_uri = environ.get('DATABASE_URL', 'sqlite:///:memory:'),
+            slack_webhook_url = environ.get('SLACK_WEBHOOK_URL', ''),
+            slack_channel = environ.get('SLACK_CHANNEL', 'bot-testing'),
+            debug = len(environ.get('DEBUG', '')) > 0
+        )
+        print(f'Loaded configuration: {config}')
         return config
-    
-    def __init__(self, create_key):
-        assert(create_key == MtgSpoilerConfig.__create_key)

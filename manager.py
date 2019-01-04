@@ -1,3 +1,5 @@
+from typing import List
+
 from config import MtgSpoilerConfig
 from database import Database
 from scryfall import ScryfallClient
@@ -14,6 +16,10 @@ class Manager:
         self.db = db
         self.api = api
         self.slack = slack
+    
+
+    def handle(self, action: str, args: List[str], sets: bool = False):
+        print(f'Running {action} {args}')
 
 
     def watch_sets(self, codes):

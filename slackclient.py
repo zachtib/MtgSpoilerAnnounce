@@ -8,13 +8,15 @@ class SlackClient:
     channel: str
     batch_threshold: int
     batch_channel: int
+    debug: bool
 
 
-    def __init__(self, webhook_url, channel, batch_threshold=None, batch_channel=None):
+    def __init__(self, webhook_url, channel, batch_threshold=None, batch_channel=None, debug=False):
         self.webhook_url = webhook_url
         self.channel = channel
         self.batch_threshold = batch_threshold
         self.batch_channel = batch_channel
+        self.debug = debug
 
 
     @property
@@ -49,7 +51,10 @@ class SlackClient:
  
     def _post(self, channel: str, payload: dict):
         payload['channel'] = channel
-        requests.post(self.webhook_url, data=str(payload))
+        if self.debug:
+            print(f'SlackClient: Would post {payload} to {channel}')
+        else:
+            requests.post(self.webhook_url, data=str(payload))
 
     @staticmethod
     def _is_card_english(card_name):

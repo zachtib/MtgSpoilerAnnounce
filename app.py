@@ -14,13 +14,15 @@ from models import Card, Set
 from scryfall import ScryfallClient
 from slackclient import SlackClient
 
+config = MtgSpoilerConfig.from_env()
+
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = environ['DATABASE_URL']
+app.config['SQLALCHEMY_DATABASE_URI'] = config.db_uri
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
-config = MtgSpoilerConfig.from_env()
 api = ScryfallClient()
-slack = SlackClient(config.slack_webhook_url, config.slack_channel)
+slack = SlackClient(config.slack_webhook_url, config.slack_channel, debug=config.debug)
 
 class Card(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -60,7 +62,6 @@ if __name__ == '__main__':
     db.create_all()
     if len(sys.argv) > 1:
         code = sys.argv[1]
-        print(code)
         check_for_new_cards(code)
     else:
         app.run()
