@@ -15,6 +15,7 @@ class ScryfallClient:
             results.append(Card(
                 name=card_json['name'], 
                 image_url=card_json["image_uris"]["normal"]
+                source_url=card_json["scryfall_uri"]
             ))
         return results
     
