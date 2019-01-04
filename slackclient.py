@@ -49,7 +49,7 @@ class SlackClient:
  
     def _post(self, channel: str, payload: dict):
         payload['channel'] = channel
-        requests.post(self.webhook_url, data=url(payload))
+        requests.post(self.webhook_url, data=str(payload))
 
     @staticmethod
     def _is_card_english(card_name):
