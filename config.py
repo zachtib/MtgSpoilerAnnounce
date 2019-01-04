@@ -13,7 +13,7 @@ class MtgSpoilerConfig:
     @classmethod
     def from_env(cls) -> MtgSpoilerConfig:
         config = MtgSpoilerConfig
-        config.db_uri = enviro.get('DATABASE_URL', 'sqlite://example.db')
+        config.db_uri = environ.get('DATABASE_URL', 'sqlite://example.db')
         config.slack_webhook_url = environ['SLACK_WEBHOOK_URL']
         config.slack_channel = environ['SLACK_CHANNEL']
         config.debug = len(environ.get('DEBUG', '')) > 0
