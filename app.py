@@ -21,8 +21,8 @@ app.config['SQLALCHEMY_DATABASE_URI'] = config.db_uri
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
-api = ScryfallClient()
-slack = SlackClient(config.slack_webhook_url, config.slack_channel, debug=config.debug)
+api = ScryfallClient(config)
+slack = SlackClient(config)
 
 class Card(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -30,7 +30,7 @@ class Card(db.Model):
     expansion = db.Column(db.String(3), nullable=False)
 
     def __repr__(self):
-        return '<User %r>' % self.username
+        return '<Card %r>' % self.name
 
 
 @app.route('/')

@@ -9,6 +9,8 @@ class MtgSpoilerConfig:
     slack_webhook_url: str
     slack_channel: str
     debug: bool
+    batch_threshold: int = None
+    batch_channel: str = None
 
     @classmethod
     def from_env(cls) -> MtgSpoilerConfig:

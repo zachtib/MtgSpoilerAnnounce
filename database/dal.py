@@ -1,13 +1,14 @@
 from typing import List
 
+from config import MtgSpoilerConfig
 from .data_models import Card, Set
 
 class Database:
 
-    db_uri: str
+    config: MtgSpoilerConfig
 
-    def __init__(self, db_uri):
-        self.db_uri = db_uri
+    def __init__(self, config: MtgSpoilerConfig):
+        self.config = config
 
     def get_all_sets(self) -> List[Set]:
         return []

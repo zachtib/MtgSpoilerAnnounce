@@ -2,9 +2,15 @@ from typing import List
 
 import requests
 from models import Card, Set
-
+from config import MtgSpoilerConfig
 
 class ScryfallClient:
+
+    config: MtgSpoilerConfig
+
+    def __init__(self, config: MtgSpoilerConfig):
+        self.config = config
+
     def get_cards_from_set(self, code: str) -> List[Card]:
         r = requests.get(f'https://api.scryfall.com/cards/search?order=spoiled&q=e={code}&unique=prints')
         if r.status_code != 200:

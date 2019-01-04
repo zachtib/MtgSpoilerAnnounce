@@ -1,5 +1,6 @@
 from typing import List
 from models import Card
+from config import MtgSpoilerConfig
 
 import requests
 
@@ -11,12 +12,12 @@ class SlackClient:
     debug: bool
 
 
-    def __init__(self, webhook_url, channel, batch_threshold=None, batch_channel=None, debug=False):
-        self.webhook_url = webhook_url
-        self.channel = channel
-        self.batch_threshold = batch_threshold
-        self.batch_channel = batch_channel
-        self.debug = debug
+    def __init__(self, config: MtgSpoilerConfig):
+        self.webhook_url = config.slack_webhook_url
+        self.channel = config.slack_channel
+        self.batch_threshold = config.batch_threshold
+        self.batch_channel = config.batch_channel
+        self.debug = config.debug
 
 
     @property
