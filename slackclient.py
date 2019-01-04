@@ -42,7 +42,7 @@ class SlackClient:
     def _post_card(self, channel: str, card: Card):
         message = f'<{card.image_url}|{card.name}>'
         if not self._is_card_english(card.name) and card.source_url:
-            message = f'<{card.source_url}|{card.name}>'
+            message = f'{card.name}: {card.source_url}'
         self._post(channel, {
             'text': message,
         })
