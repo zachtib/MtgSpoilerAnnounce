@@ -43,8 +43,13 @@ class SlackClient:
 
 
     def _post_card(self, channel: str, card: Card):
+        message: str
+        if self._is_card_english(card):
+            message = f'<{card.image_url}|{card.name}>'
+        else:
+            message = f'{card.name}: {card.source_url}'
         self._post(channel, {
-            'text': f'{card.name}: {card.source_url}',
+            'text': message,
         })
  
     def _post(self, channel: str, payload: dict):
@@ -55,7 +60,7 @@ class SlackClient:
             requests.post(self.webhook_url, data=str(payload))
 
     @staticmethod
-    def _is_card_english(card_name):
-        return not (card_name[0] == '"' and card_name[-1] == '"')
+    def _is_card_english(card):
+        return not (card.name[0] == '"' and card.name[-1] == '"')
 
 
