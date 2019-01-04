@@ -31,10 +31,9 @@ class Manager:
 
 
     def refresh_sets(self): 
-        known_sets = db.get_all_sets()
-        known_set_codes = [ s.code for s in known_sets ]
-        api_sets = api.get_all_sets()
-        new_sets = list(filter(lambda x: x.code not in known_set_codes, api_sets))
+        known_set_codes = [ s.code for s in self.db.get_all_sets() ]
+        api_sets = self.api.get_all_sets()
+        new_sets = [s for s in api_sets if s.code not in known_set_codes]
 
 
     def check_for_spoilers(self):
