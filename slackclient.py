@@ -62,7 +62,7 @@ class SlackClient:
 
     @staticmethod
     def format_card(card: Card) -> str:
-        return f'<{card.image_url}|{card.name}> {format_mana(card.mana_cost)}\n{card.type_line}\n{format_mana(card.oracle_text)}{card.power_toughness}'
+        return f'{card.name} {format_mana(card.mana_cost)}\n{card.type_line}\n{format_mana(card.oracle_text)}{card.power_toughness}\n<{card.image_url}|Image>'
 
     @staticmethod
     def _is_card_english(card):
