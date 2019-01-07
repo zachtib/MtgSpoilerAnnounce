@@ -23,3 +23,5 @@ class ScryfallClient:
     
     def get_all_sets(self) -> List[Set]:
         pass
+    
+    

@@ -26,11 +26,18 @@ class Manager:
             pass
         elif action == 'refresh':
             pass
-        elif action == 'dbtest':
+        elif action == 'db_test':
             self.db_test()
+        elif action == 'api_test':
+            self.api_test()
         else:
             print(f'Unknown action: {action}')
 
+    def api_test(self):
+        assert(self.config.debug)
+        cards = self.api.get_cards_from_set("rna")[0:5]
+        for card in cards:
+            print(card)
 
     def db_test(self):
         assert(self.config.debug)
