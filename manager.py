@@ -57,11 +57,11 @@ class Manager:
         cards = self.db.get_cards_in_expansion("test")
         print(cards)
 
-    def watch_sets(self, codes):
+    def watch(self, codes):
         print(f'Watching  {codes}')
         self.db.watch_expansions(codes)
 
-    def unwatch_sets(self, codes):
+    def unwatch(self, codes):
         print(f'Unwatching  {codes}')
 
     def refresh_sets(self, args):
@@ -82,10 +82,11 @@ class Manager:
     def refresh(self, args):
         if 'sets' in args:
             self.refresh_sets()
-        for set_ in self.db.get_watched_expansions():
-            self.check_set_for_spoilers(set_.code)
+        for expansion in self.db.get_watched_expansions():
+            self.check_set_for_spoilers(expansion.code)
 
     def check_set_for_spoilers(self, code, post_to_slack=True):
+        print(f'Refreshing {code}')
         all_cards = self.api.get_cards_from_set(code)
         previous_card_ids = [card.scryfall_id
                              for card in
@@ -94,10 +95,10 @@ class Manager:
                      for card in all_cards
                      if card.scryfall_id not in previous_card_ids]
 
+        print(f'Found {len(new_cards)} new cards')
+
         if post_to_slack:
             self.slack.post_cards(new_cards)
-        else:
-            print(f'Found {len(new_cards)} new cards')
 
         new_cards_db = [CardDbModel(
                 name=card.name,
@@ -106,6 +107,10 @@ class Manager:
             ) for card in new_cards]
 
         self.db.create_cards(new_cards_db)
+
+    def show_watched(self, args):
+        for expansion in self.db.get_watched_expansions():
+            print(f'Watching {str(expansion)}')
 
     def init_db(self, args):
         self.refresh_sets(args)
