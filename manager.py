@@ -53,6 +53,7 @@ class Manager:
         cards = self.api.get_cards_from_set("rna")[0:5]
         for card in cards:
             print(card)
+        print(self.api.test_mapping())
 
     def db_test(self):
         assert(self.config.debug)
