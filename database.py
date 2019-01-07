@@ -14,7 +14,7 @@ class Card(Base):
 
     id = Column(Integer, primary_key=True)
     name = Column(String(80), nullable=False)
-    expansion = Column(String(3), nullable=False)
+    expansion = Column(String(4), nullable=False)
     scryfall_id = Column(String(60), nullable=True)
 
     def __repr__(self):
