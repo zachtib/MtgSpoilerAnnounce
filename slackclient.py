@@ -9,7 +9,7 @@ p = re.compile(r'\{(\w+)\}')
 
 
 def format_mana(manacost: str) -> str:
-    return p.sub(r":mana-\1:", manacost.lower())
+    return p.sub(r":mana-\1:", manacost)
 
 
 class SlackClient:
