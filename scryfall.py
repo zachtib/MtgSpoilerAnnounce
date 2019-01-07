@@ -64,7 +64,7 @@ class ScryfallClient:
         r = requests.get(f'{BASE_URL}/sets')
         if r.status_code != 200:
             return []
-        return [Expansion.from_json(j) for j in r.json()['data']]
+        return [expansion_from_json(j) for j in r.json()['data']]
 
     def test_mapping(self) -> Card:
         assert(self.config.debug)
