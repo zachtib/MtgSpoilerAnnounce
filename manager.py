@@ -79,7 +79,9 @@ class Manager:
                 ) for e in new_sets]
         self.db.insert_expansions(exps)
 
-    def check_for_spoilers(self, args):
+    def refresh(self, args):
+        if 'sets' in args:
+            self.refresh_sets()
         for set_ in self.db.get_watched_expansions():
             self.check_set_for_spoilers(set_.code)
 
