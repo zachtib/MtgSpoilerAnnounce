@@ -1,16 +1,9 @@
 import sys
 
-import requests
-
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from os import environ
 
-from mtgspoilers import get_manager
 from config import MtgSpoilerConfig
-from database import Database
-from manager import Manager
-from models import Card, Set
 from scryfall import ScryfallClient
 from slackclient import SlackClient
 
@@ -23,6 +16,7 @@ db = SQLAlchemy(app)
 
 api = ScryfallClient(config)
 slack = SlackClient(config)
+
 
 class Card(db.Model):
     id = db.Column(db.Integer, primary_key=True)
