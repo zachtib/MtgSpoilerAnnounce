@@ -12,9 +12,9 @@ from slackclient import SlackClient
 
 def get_manager() -> Manager:
     config = MtgSpoilerConfig.from_env()
-    api = ScryfallClient()
-    db = Database(config.db_uri)
-    slack = SlackClient(config.slack_webhook_url, config.slack_channel)
+    api = ScryfallClient(config)
+    db = Database(config)
+    slack = SlackClient(config)
     return Manager(config, db, api, slack)
 
 def parse_args():

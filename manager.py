@@ -1,7 +1,7 @@
 from typing import List
 
 from config import MtgSpoilerConfig
-from database import Database
+from database import Database, Card as CardDbModel, Expansion as ExpansionDbModel
 from scryfall import ScryfallClient
 from slackclient import SlackClient
 
@@ -20,7 +20,26 @@ class Manager:
 
     def handle(self, action: str, args: List[str], sets: bool = False):
         print(f'Running {action} {args}')
+        if action == 'watch':
+            pass
+        elif action == 'unwatch':
+            pass
+        elif action == 'refresh':
+            pass
+        elif action == 'dbtest':
+            self.db_test()
+        else:
+            print(f'Unknown action: {action}')
 
+
+    def db_test(self):
+        assert(self.config.debug)
+        self.db.create_cards([
+            CardDbModel(name="abcde", expansion="test"),
+            CardDbModel(name="fghij", expansion="test")
+        ])
+        cards = self.db.get_cards_in_expansion("test")
+        print(cards)
 
     def watch_sets(self, codes):
         print(f'Watching  {codes}')
