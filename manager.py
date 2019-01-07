@@ -36,7 +36,7 @@ class Manager:
 
     def watch_test(self, args):
         assert(self.config.debug)
-        self.refresh_sets()
+        self.refresh_sets(args)
         self.watch_sets(('rna', ))
         results = self.db.get_watched_expansions()
         print(results)
@@ -103,8 +103,8 @@ class Manager:
 
         self.db.create_cards(new_cards_db)
 
-    def init_db(self, codes):
-        self.refresh_sets()
-        for code in codes:
+    def init_db(self, args):
+        self.refresh_sets(args)
+        for code in args:
             self.check_set_for_spoilers(code, False)
 
