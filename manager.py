@@ -97,7 +97,7 @@ class Manager:
 
         new_cards_db = [CardDbModel(
                 name=card.name,
-                expansion=card.expansion,
+                expansion=code,
                 scryfall_id=card.scryfall_id
             ) for card in new_cards]
 
