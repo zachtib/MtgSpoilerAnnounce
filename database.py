@@ -1,13 +1,13 @@
 from typing import List
 
 from config import MtgSpoilerConfig
-from dataclasses import dataclass
 
 from sqlalchemy import create_engine, Column, String, Integer, Date, Boolean
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
 Base = declarative_base()
+
 
 class Card(Base):
     __tablename__ = 'cards'
@@ -23,10 +23,10 @@ class Card(Base):
 
 class Expansion(Base):
     __tablename__ = 'expansions'
-    
+
     id = Column(Integer, primary_key=True)
     name = Column(String(80), nullable=False)
-    code = Column(String(4), nullable=False)
+    code = Column(String(10), nullable=False)
     kind = Column(String(20), nullable=False)
     watched = Column(Boolean, default=False)
     release_date = Column(Date)
@@ -34,6 +34,7 @@ class Expansion(Base):
 
     def __repr__(self):
         return f'<Expansion: {self.name}>'
+
 
 class Database:
 
@@ -48,7 +49,7 @@ class Database:
 
     def get_all_expansions(self) -> List[Expansion]:
         return self.session.query(Expansion).all()
-    
+
     def get_watched_expansions(self) -> List[Expansion]:
         return self.session.query(Expansion).filter_by(watched=True).all()
 
@@ -57,7 +58,7 @@ class Database:
             .query(Card) \
             .filter_by(expansion=code) \
             .all()
-    
+
     def watch_expansions(self, codes: List[str]):
         expansions = self.session.query(Expansion).filter(Expansion.code.in_(codes)).all()
         for e in expansions:
@@ -69,7 +70,7 @@ class Database:
         for card in cards:
             self.session.add(card)
         self.session.commit()
-    
+
     def insert_expansions(self, expansions: List[Expansion]):
         for e in expansions:
             self.session.add(e)
