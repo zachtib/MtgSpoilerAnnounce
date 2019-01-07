@@ -13,6 +13,8 @@ class Card:
     power: str
     toughness: str
 
+    scryfall_id: str
+
     @classmethod
     def from_json(cls, json: dict) -> Card:
         try:
@@ -24,7 +26,8 @@ class Card:
                 type_line=json['type_line'],
                 oracle_text=json.get('oracle_text', [face['oracle_text'] for face in json.get('card_faces', [])]),
                 power=json.get('power', None),
-                toughness=json.get('toughness', None)
+                toughness=json.get('toughness', None),
+                scryfall_id=json.get('scryfall_id', None)
             )
         except:
             print(f'Error parsing: ' + str(json))
@@ -39,6 +42,17 @@ class Card:
             return f'\n{self.power}/{self.toughness}'
 
 @dataclass
-class Set:
+class Expansion:
     name: str
     code: str
+
+    @classmethod
+    def from_json(cls, json: dict) -> Expansion:
+        try:
+            return Expansion(
+                name=json['name'], 
+                code=json['code']
+            )
+        except:
+            print(f'Error parsing: ' + str(json))
+            raise

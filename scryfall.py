@@ -1,7 +1,7 @@
 from typing import List
 
 import requests
-from models import Card, Set
+from models import Card, Expansion
 from config import MtgSpoilerConfig
 
 
@@ -21,7 +21,10 @@ class ScryfallClient:
             return []
         return [Card.from_json(j) for j in r.json()['data']]
     
-    def get_all_sets(self) -> List[Set]:
-        pass
+    def get_all_sets(self) -> List[Expansion]:
+        r = requests.get(f'{BASE_URL}/sets')
+        if r.status_code != 200:
+            return []
+        return [Expansion.from_json(j) for j in r.json()['data']]
     
     

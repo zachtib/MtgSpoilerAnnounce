@@ -18,7 +18,7 @@ class Card(Base):
     scryfall_id = Column(String(60), nullable=True)
 
     def __repr__(self):
-        return f'<Card {self.name}>'
+        return f'<Card: {self.name}>'
 
 
 class Expansion(Base):
@@ -33,7 +33,7 @@ class Expansion(Base):
     scryfall_id = Column(String(60), nullable=True)
 
     def __repr__(self):
-        return f'<Expansion {self.name}>'
+        return f'<Expansion: {self.name}>'
 
 class Database:
 
@@ -47,10 +47,10 @@ class Database:
         Base.metadata.create_all(engine)
 
     def get_all_expansions(self) -> List[Expansion]:
-        return []
+        return self.session.query(Expansion).all()
     
     def get_watched_expansions(self) -> List[Expansion]:
-        return []
+        return self.session.query(Expansion).filter_by(watched=True).all()
 
     def get_cards_in_expansion(self, code) -> List[Card]:
         return self.session \
@@ -59,9 +59,18 @@ class Database:
             .all()
     
     def watch_expansions(self, codes: List[str]):
-        pass
+        expansions = self.session.query(Expansion).filter(Expansion.code.in_(codes)).all()
+        for e in expansions:
+            e.watched = True
+            self.session.add(e)
+        self.session.commit()
 
     def create_cards(self, cards: List[Card]):
         for card in cards:
             self.session.add(card)
+        self.session.commit()
+    
+    def insert_expansions(self, expansions: List[Expansion]):
+        for e in expansions:
+            self.session.add(e)
         self.session.commit()

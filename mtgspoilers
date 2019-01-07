@@ -5,7 +5,6 @@ import argparse
 from config import MtgSpoilerConfig
 from database import Database
 from manager import Manager
-from models import Card, Set
 from scryfall import ScryfallClient
 from slackclient import SlackClient
 
