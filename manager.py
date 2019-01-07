@@ -30,7 +30,7 @@ class Manager:
             sig = signature(callable)
             print(sig)
             callable(args)
-        except Exception as error:
+        except AttributeError as error:
             print(error)
             print(f'Unknown action: {action}')
 
@@ -107,4 +107,3 @@ class Manager:
         self.refresh_sets(args)
         for code in args:
             self.check_set_for_spoilers(code, False)
-
