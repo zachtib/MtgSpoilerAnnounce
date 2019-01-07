@@ -94,6 +94,8 @@ class Manager:
 
         if post_to_slack:
             self.slack.post_cards(new_cards)
+        else:
+            print(f'Found {len(new_cards)} new cards')
 
         new_cards_db = [CardDbModel(
                 name=card.name,
