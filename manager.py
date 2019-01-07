@@ -1,11 +1,13 @@
-from typing import List
 from datetime import date
+from typing import List
 
 from config import MtgSpoilerConfig
-from models import Card, Expansion
-from database import Database, Card as CardDbModel, Expansion as ExpansionDbModel
+from database import Card as CardDbModel
+from database import Database
+from database import Expansion as ExpansionDbModel
 from scryfall import ScryfallClient
 from slackclient import SlackClient
+
 
 class Manager:
     config: MtgSpoilerConfig
@@ -13,12 +15,12 @@ class Manager:
     api: ScryfallClient
     slack: SlackClient
 
-    def __init__(self, config: MtgSpoilerConfig, db: Database, api: ScryfallClient, slack: SlackClient):
+    def __init__(self, config: MtgSpoilerConfig, db: Database,
+                 api: ScryfallClient, slack: SlackClient):
         self.config = config
         self.db = db
         self.api = api
         self.slack = slack
-    
 
     def handle(self, action: str, args: List[str], sets: bool = False):
         print(f'Running {action} {args}')
@@ -65,25 +67,22 @@ class Manager:
         print(f'Watching  {codes}')
         self.db.watch_expansions(codes)
 
-
     def unwatch_sets(self, codes):
         print(f'Unwatching  {codes}')
 
-
-    def refresh_sets(self): 
-        known_set_codes = [ s.code for s in self.db.get_all_expansions() ]
+    def refresh_sets(self):
+        known_set_codes = [s.code for s in self.db.get_all_expansions()]
         api_sets = self.api.get_all_sets()
         new_sets = [s for s in api_sets if s.code not in known_set_codes]
         print(f'Found {len(new_sets)} new sets')
-        exps = [ ExpansionDbModel(
+        exps = [ExpansionDbModel(
                 name=e.name,
                 code=e.code,
                 kind="",
                 watched=False,
                 release_date=date.today(),
                 scryfall_id=""
-            ) for e in new_sets
-        ]
+            ) for e in new_sets]
         self.db.insert_expansions(exps)
 
     def check_for_spoilers(self):
@@ -92,16 +91,19 @@ class Manager:
 
     def check_set_for_spoilers(self, code):
         all_cards = self.api.get_cards_from_set(code)
-        previous_card_ids = [card.scryfall_id for card in self.db.get_cards_in_expansion(code)]
-        new_cards = [card for card in all_cards if card.scryfall_id not in previous_card_ids]
-        
+        previous_card_ids = [card.scryfall_id
+                             for card in
+                             self.db.get_cards_in_expansion(code)]
+        new_cards = [card
+                     for card in all_cards
+                     if card.scryfall_id not in previous_card_ids]
+
         self.slack.post_cards(new_cards)
 
-        new_cards_db = [ CardDbModel(
+        new_cards_db = [CardDbModel(
                 name=card.name,
                 expansion=card.expansion,
                 scryfall_id=card.scryfall_id
-            ) for card in new_cards
-        ]
+            ) for card in new_cards]
 
         self.db.create_cards(new_cards_db)
