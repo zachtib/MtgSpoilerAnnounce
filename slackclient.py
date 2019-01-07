@@ -55,7 +55,10 @@ class SlackClient:
         if self.debug:
             print(f'SlackClient: Would post {payload} to {channel}')
         else:
-            requests.post(self.webhook_url, data=str(payload).encode("utf-8"))
+            try:
+                requests.post(self.webhook_url, data=str(payload).encode("utf-8"))
+            except Exception as err:
+                print(err)
 
     @staticmethod
     def format_card(card: Card) -> str:
