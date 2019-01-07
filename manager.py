@@ -92,8 +92,8 @@ class Manager:
 
     def check_set_for_spoilers(self, code):
         all_cards = self.api.get_cards_from_set(code)
-        previous_card_names = [card.name for card in self.db.get_cards_in_expansion(code)]
-        new_cards = [card for card in all_cards if card.name not in previous_card_names]
+        previous_card_ids = [card.scryfall_id for card in self.db.get_cards_in_expansion(code)]
+        new_cards = [card for card in all_cards if card.scryfall_id not in previous_card_ids]
         
         self.slack.post_cards(new_cards)
 
