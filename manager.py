@@ -81,7 +81,7 @@ class Manager:
 
     def refresh(self, args):
         if 'sets' in args:
-            self.refresh_sets()
+            self.refresh_sets(args)
         for expansion in self.db.get_watched_expansions():
             self.check_set_for_spoilers(expansion.code)
 
@@ -111,6 +111,10 @@ class Manager:
     def show_watched(self, args):
         for expansion in self.db.get_watched_expansions():
             print(f'Watching {str(expansion)}')
+    
+    def show_cards(self, args):
+        for card in self.db.get_cards_in_expansion(args[0]):
+            print(card)
 
     def init_db(self, args):
         self.refresh_sets(args)
