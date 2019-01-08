@@ -1,3 +1,4 @@
+from logging import Logger
 from typing import List
 
 from config import MtgSpoilerConfig
@@ -39,9 +40,11 @@ class Expansion(Base):
 class Database:
 
     config: MtgSpoilerConfig
+    logger: Logger
 
-    def __init__(self, config: MtgSpoilerConfig):
+    def __init__(self, config: MtgSpoilerConfig, logger: Logger):
         self.config = config
+        self.logger = logger
         engine = create_engine(config.db_uri)
         Session = sessionmaker(bind=engine)
         self.session = Session()

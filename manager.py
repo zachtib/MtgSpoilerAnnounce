@@ -1,4 +1,5 @@
 from datetime import date
+from logging import Logger
 from typing import List
 from inspect import signature
 
@@ -15,13 +16,14 @@ class Manager:
     db: Database
     api: ScryfallClient
     slack: SlackClient
+    logger: Logger
 
-    def __init__(self, config: MtgSpoilerConfig, db: Database,
-                 api: ScryfallClient, slack: SlackClient):
+    def __init__(self, config: MtgSpoilerConfig, db: Database, api: ScryfallClient, slack: SlackClient, logger: Logger):
         self.config = config
         self.db = db
         self.api = api
         self.slack = slack
+        self.logger = logger
 
     def handle(self, action: str, args: List[str]):
         try:
@@ -29,10 +31,10 @@ class Manager:
             sig = signature(func)
             p = len(sig.parameters)
             if p == 0:
-                print(f'Running {action}')
+                self.logger.debug(f'Running {action}')
                 func()
             elif p == 1:
-                print(f'Running {action} {args}')
+                self.logger.debug(f'Running {action} {args}')
                 func(args)
         except AttributeError as error:
             print(error)

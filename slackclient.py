@@ -1,3 +1,4 @@
+from logging import Logger
 from typing import List
 from models import Card
 from config import MtgSpoilerConfig
@@ -16,15 +17,17 @@ class SlackClient:
     webhook_url: str
     channel: str
     batch_threshold: int
-    batch_channel: int
+    batch_channel: str
     debug: bool
+    logger: Logger
 
-    def __init__(self, config: MtgSpoilerConfig):
+    def __init__(self, config: MtgSpoilerConfig, logger: Logger):
         self.webhook_url = config.slack_webhook_url
         self.channel = config.slack_channel
         self.batch_threshold = config.batch_threshold
         self.batch_channel = config.batch_channel
         self.debug = config.debug
+        self.logger = logger
 
     @property
     def batch_enabled(self):
@@ -46,6 +49,7 @@ class SlackClient:
         })
 
     def _post_card(self, channel: str, card: Card):
+        print(f'Posting card {card.name} to Slack')
         self._post(channel, {
             'text': self.format_card(card),
         })
@@ -58,6 +62,7 @@ class SlackClient:
             try:
                 requests.post(self.webhook_url, data=str(payload).encode("utf-8"))
             except Exception as err:
+                self.logger.error(err)
                 print(err)
 
     @staticmethod

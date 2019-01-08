@@ -1,3 +1,4 @@
+from logging import Logger
 from typing import List
 
 import requests
@@ -51,9 +52,11 @@ def expansion_from_json(json: dict) -> Expansion:
 class ScryfallClient:
 
     config: MtgSpoilerConfig
+    logger: Logger
 
-    def __init__(self, config: MtgSpoilerConfig):
+    def __init__(self, config: MtgSpoilerConfig, logger: Logger):
         self.config = config
+        self.logger = logger
 
     def get_cards_from_set(self, code: str) -> List[Card]:
         r = requests.get(f'{BASE_URL}/cards/search?order=spoiled&q=e={code}&unique=prints')
