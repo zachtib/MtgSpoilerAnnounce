@@ -61,8 +61,8 @@ class SlackClient:
         else:
             try:
                 r = requests.post(self.webhook_url, data=str(payload))
-                self.logger.debug(f'Response from slack: {r.status_code}')
-                self.logger.debug(f'Content: {r.content}')
+                if r.status_code != 200:
+                    self.logger.error(f'Error from Slack: Status {r.status_code}: {r.content}')
             except Exception as err:
                 self.logger.error(err)
                 print(err)
