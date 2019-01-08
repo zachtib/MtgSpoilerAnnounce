@@ -60,7 +60,7 @@ class SlackClient:
             print(f'SlackClient: Would post {payload} to {channel}')
         else:
             try:
-                r = requests.post(self.webhook_url, data=str(payload).encode("utf-8"))
+                r = requests.post(self.webhook_url, data=str(payload))
                 self.logger.debug(f'Response from slack: {r.status_code}')
                 self.logger.debug(f'Content: {r.content}')
             except Exception as err:
