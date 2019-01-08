@@ -88,9 +88,14 @@ class Manager:
     def check_set_for_spoilers(self, code, post_to_slack=True):
         print(f'Refreshing {code}')
         all_cards = self.api.get_cards_from_set(code)
+        print(f'API returned {len(all_cards)} cards for {code}')
         previous_card_ids = [card.scryfall_id
                              for card in
                              self.db.get_cards_in_expansion(code)]
+
+        if None in previous_card_ids:
+            print('None is stored as a scryfall_id!')
+
         new_cards = [card
                      for card in all_cards
                      if card.scryfall_id not in previous_card_ids]
@@ -99,6 +104,8 @@ class Manager:
 
         if post_to_slack:
             self.slack.post_cards(new_cards)
+        else:
+            print('Skipping post to slack')
 
         new_cards_db = [CardDbModel(
                 name=card.name,

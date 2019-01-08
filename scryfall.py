@@ -27,7 +27,7 @@ def card_from_json(json: dict) -> Card:
             oracle_text=oracle_text,
             power=json.get('power', None),
             toughness=json.get('toughness', None),
-            scryfall_id=json.get('scryfall_id', None)
+            scryfall_id=json['id']
         )
     except KeyError as error:
         print(f'Error parsing: ' + str(json))
@@ -67,7 +67,7 @@ class ScryfallClient:
         return [expansion_from_json(j) for j in r.json()['data']]
 
     def test_mapping(self) -> Card:
-        assert(self.config.debug)
+        assert self.config.debug
         cls_ = Card
         r = requests.get('https://api.scryfall.com/cards/named?fuzzy=aust+com')
         json = r.json()
