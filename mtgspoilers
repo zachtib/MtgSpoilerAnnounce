@@ -20,11 +20,10 @@ def get_manager() -> Manager:
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('action', help='One of: refresh, watch, unwatch')
-    parser.add_argument('--sets', action='store_true', help='For refresh, also update set information')
     parser.add_argument('arguments', metavar='SET', type=str, nargs='*', help='Individual sets to watch/unwatch')
     return parser.parse_args()
 
 
 if __name__ == '__main__':
     args = parse_args()
-    manager = get_manager().handle(args.action, args.arguments, sets=args.sets)
+    manager = get_manager().handle(args.action, args.arguments)

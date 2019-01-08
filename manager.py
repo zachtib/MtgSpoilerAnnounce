@@ -23,33 +23,33 @@ class Manager:
         self.api = api
         self.slack = slack
 
-    def handle(self, action: str, args: List[str], sets: bool = False):
+    def handle(self, action: str, args: List[str]):
         print(f'Running {action} {args}')
         try:
-            callable = getattr(self, action)
+            func = getattr(self, action)
             sig = signature(callable)
             print(sig)
-            callable(args)
+            func(args)
         except AttributeError as error:
             print(error)
             print(f'Unknown action: {action}')
 
     def watch_test(self, args):
-        assert(self.config.debug)
+        assert self.config.debug
         self.refresh_sets(args)
         self.watch_sets(('rna', ))
         results = self.db.get_watched_expansions()
         print(results)
 
     def api_test(self, args):
-        assert(self.config.debug)
+        assert self.config.debug
         cards = self.api.get_cards_from_set("rna")[0:5]
         for card in cards:
             print(card)
         print(self.api.test_mapping())
 
     def db_test(self, args):
-        assert(self.config.debug)
+        assert self.config.debug
         self.db.create_cards([
             CardDbModel(name="abcde", expansion="test"),
             CardDbModel(name="fghij", expansion="test")
@@ -74,8 +74,8 @@ class Manager:
                     code=e.code,
                     kind="",
                     watched=False,
-                    release_date=date.today(),
-                    scryfall_id=""
+                    release_date=date.today(),  # TODO: Parse the date from API
+                    scryfall_id=e.scryfall_id
                 ) for e in new_sets]
         self.db.insert_expansions(exps)
 
