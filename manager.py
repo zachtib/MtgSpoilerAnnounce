@@ -7,6 +7,7 @@ from config import MtgSpoilerConfig
 from database import Card as CardDbModel
 from database import Database
 from database import Expansion as ExpansionDbModel
+from models import Card
 from scryfall import ScryfallClient
 from slackclient import SlackClient
 
@@ -108,7 +109,7 @@ class Manager:
         print(f'Found {len(new_cards)} new cards')
 
         if post_to_slack:
-            self.slack.post_cards(new_cards)
+            new_cards = self.slack.post_cards(new_cards)
         else:
             print('Skipping post to slack')
 

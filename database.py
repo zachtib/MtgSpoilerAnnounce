@@ -70,6 +70,7 @@ class Database:
         self.session.commit()
 
     def create_cards(self, cards: List[Card]):
+        self.logger.debug(f'Saving {len(cards)} new cards to the database')
         for card in cards:
             self.session.add(card)
         self.session.commit()
