@@ -125,5 +125,6 @@ class Manager:
 
     def init_db(self, args):
         self.refresh_sets(args)
+        self.watch(args)
         for code in args:
             self.check_set_for_spoilers(code, False)
