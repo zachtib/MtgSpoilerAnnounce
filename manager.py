@@ -24,31 +24,34 @@ class Manager:
         self.slack = slack
 
     def handle(self, action: str, args: List[str]):
-        print(f'Running {action} {args}')
         try:
             func = getattr(self, action)
-            sig = signature(callable)
-            print(sig)
-            func(args)
+            sig = signature(func)
+            p = len(sig.parameters)
+            if p == 0:
+                print(f'Running {action}')
+                func()
+            elif p == 1:
+                print(f'Running {action} {args}')
+                func(args)
         except AttributeError as error:
             print(error)
-            print(f'Unknown action: {action}')
 
     def watch_test(self, args):
         assert self.config.debug
-        self.refresh_sets(args)
-        self.watch_sets(('rna', ))
+        self.refresh_sets()
+        self.watch(('rna', ))
         results = self.db.get_watched_expansions()
         print(results)
 
-    def api_test(self, args):
+    def api_test(self):
         assert self.config.debug
         cards = self.api.get_cards_from_set("rna")[0:5]
         for card in cards:
             print(card)
         print(self.api.test_mapping())
 
-    def db_test(self, args):
+    def db_test(self):
         assert self.config.debug
         self.db.create_cards([
             CardDbModel(name="abcde", expansion="test"),
@@ -64,7 +67,7 @@ class Manager:
     def unwatch(self, codes):
         print(f'Unwatching  {codes}')
 
-    def refresh_sets(self, args):
+    def refresh_sets(self):
         known_set_codes = [s.code for s in self.db.get_all_expansions()]
         api_sets = self.api.get_all_sets()
         new_sets = [s for s in api_sets if s.code not in known_set_codes]
@@ -81,7 +84,7 @@ class Manager:
 
     def refresh(self, args):
         if 'sets' in args:
-            self.refresh_sets(args)
+            self.refresh_sets()
         for expansion in self.db.get_watched_expansions():
             self.check_set_for_spoilers(expansion.code)
 
@@ -115,7 +118,7 @@ class Manager:
 
         self.db.create_cards(new_cards_db)
 
-    def show_watched(self, args):
+    def show_watched(self):
         for expansion in self.db.get_watched_expansions():
             print(f'Watching {str(expansion)}')
     
@@ -124,7 +127,7 @@ class Manager:
             print(card)
 
     def init_db(self, args):
-        self.refresh_sets(args)
+        self.refresh_sets()
         self.watch(args)
         for code in args:
             self.check_set_for_spoilers(code, False)
