@@ -79,7 +79,7 @@ class Manager:
                     name=e.name,
                     code=e.code,
                     kind="",
-                    watched=False,
+                    watched=True,
                     release_date=date.today(),  # TODO: Parse the date from API
                     scryfall_id=e.scryfall_id
                 ) for e in new_sets]
