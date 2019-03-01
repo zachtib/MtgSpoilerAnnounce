@@ -1,4 +1,3 @@
-from __future__ import annotations
 from dataclasses import dataclass
 
 
@@ -22,10 +21,3 @@ class Card:
             return ''
         else:
             return f'\n{self.power}/{self.toughness}'
-
-
-@dataclass
-class Expansion:
-    name: str
-    code: str
-    scryfall_id: str

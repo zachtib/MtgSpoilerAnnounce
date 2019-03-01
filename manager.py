@@ -1,13 +1,12 @@
 from datetime import date
+from inspect import signature
 from logging import Logger
 from typing import List
-from inspect import signature
 
 from config import MtgSpoilerConfig
-from database import Card as CardDbModel
 from database import Database
-from database import Expansion as ExpansionDbModel
-from models import Card
+from database.models import Card as CardDbModel
+from database.models import Expansion as ExpansionDbModel
 from scryfall import ScryfallClient
 from slackclient import SlackClient
 
