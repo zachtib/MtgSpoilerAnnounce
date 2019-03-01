@@ -69,6 +69,7 @@ class Manager:
 
     def unwatch(self, codes):
         print(f'Unwatching  {codes}')
+        self.db.unwatch_expansions(codes)
 
     def refresh_sets(self):
         known_set_codes = [s.code for s in self.db.get_all_expansions()]

@@ -65,7 +65,16 @@ class Database:
     def watch_expansions(self, codes: List[str]):
         expansions = self.session.query(Expansion).filter(Expansion.code.in_(codes)).all()
         for e in expansions:
+            self.logger.debug(f'Watching {e.name}')
             e.watched = True
+            self.session.add(e)
+        self.session.commit()
+
+    def unwatch_expansions(self, codes: List[str]):
+        expansions = self.session.query(Expansion).filter(Expansion.code.in_(codes)).all()
+        for e in expansions:
+            self.logger.debug(f'Unwatching {e.name}')
+            e.watched = False
             self.session.add(e)
         self.session.commit()
 
