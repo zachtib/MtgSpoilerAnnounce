@@ -1,4 +1,17 @@
+import logging
+import sys
+
 from scryfall.models import Card, Expansion
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+
+handler = logging.StreamHandler(sys.stdout)
+handler.setLevel(logging.DEBUG)
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+handler.setFormatter(formatter)
+
+logger.addHandler(handler)
 
 
 def card_from_json(json: dict) -> Card:
@@ -23,8 +36,8 @@ def card_from_json(json: dict) -> Card:
             scryfall_id=json['id']
         )
     except KeyError as error:
-        print(f'Error parsing: ' + str(json))
-        print(error)
+        logger.debug(f'Error parsing: ' + str(json))
+        logger.error(error)
         raise
 
 
@@ -37,6 +50,6 @@ def expansion_from_json(json: dict) -> Expansion:
             released_at=json['released_at']
         )
     except KeyError as error:
-        print(f'Error parsing: ' + str(json))
-        print(error)
+        logger.debug(f'Error parsing: ' + str(json))
+        logger.error(error)
         raise

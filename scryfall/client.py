@@ -35,7 +35,7 @@ class ScryfallClient:
         cls_ = Card
         r = requests.get('https://api.scryfall.com/cards/named?fuzzy=aust+com')
         json = r.json()
-        print(json)
+        self.logger.debug(json)
         result = cls_()
         for key, value in json.items():
             if hasattr(result, key):

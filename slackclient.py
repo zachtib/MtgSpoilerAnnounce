@@ -63,7 +63,7 @@ class SlackClient:
     def _post(self, channel: str, payload: dict) -> bool:
         payload['channel'] = channel
         if self.debug:
-            print(f'SlackClient: Would post {payload} to {channel}')
+            self.logger.debug(f'SlackClient: Would post {payload} to {channel}')
         else:
             try:
                 payload = json.dumps(payload)

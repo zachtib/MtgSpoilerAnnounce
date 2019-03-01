@@ -1,4 +1,4 @@
-from datetime import date, datetime
+from datetime import datetime
 from inspect import signature
 from logging import Logger
 from typing import List
@@ -37,21 +37,21 @@ class Manager:
                 self.logger.debug(f'Running {action} {args}')
                 func(args)
         except AttributeError as error:
-            print(error)
+            self.logger.error(error)
 
     def watch_test(self, args):
         assert self.config.debug
         self.refresh_sets()
         self.watch(('rna', ))
         results = self.db.get_watched_expansions()
-        print(results)
+        self.logger.debug(results)
 
     def api_test(self):
         assert self.config.debug
         cards = self.api.get_cards_from_set("rna")[0:5]
         for card in cards:
-            print(card)
-        print(self.api.test_mapping())
+            self.logger.debug(card)
+        self.logger.debug(self.api.test_mapping())
 
     def db_test(self):
         assert self.config.debug
@@ -60,14 +60,14 @@ class Manager:
             CardDbModel(name="fghij", expansion="test")
         ])
         cards = self.db.get_cards_in_expansion("test")
-        print(cards)
+        self.logger.debug(cards)
 
     def watch(self, codes):
-        print(f'Watching  {codes}')
+        self.logger.debug(f'Watching  {codes}')
         self.db.watch_expansions(codes)
 
     def unwatch(self, codes):
-        print(f'Unwatching  {codes}')
+        self.logger.debug(f'Unwatching  {codes}')
         self.db.unwatch_expansions(codes)
 
     def refresh_sets(self):
@@ -75,7 +75,7 @@ class Manager:
         known_set_codes = [s.code for s in self.db.get_all_expansions()]
         api_sets = self.api.get_all_sets()
         new_sets = [s for s in api_sets if s.code not in known_set_codes]
-        print(f'Found {len(new_sets)} new sets')
+        self.logger.debug(f'Found {len(new_sets)} new sets')
         exps = []
         for e in new_sets:
             self.slack.post_message(f'Found new set: {e.name}')
@@ -99,26 +99,26 @@ class Manager:
             self.check_set_for_spoilers(expansion.code)
 
     def check_set_for_spoilers(self, code, post_to_slack=True):
-        print(f'Refreshing {code}')
+        self.logger.debug(f'Refreshing {code}')
         all_cards = self.api.get_cards_from_set(code)
-        print(f'API returned {len(all_cards)} cards for {code}')
+        self.logger.debug(f'API returned {len(all_cards)} cards for {code}')
         previous_card_ids = [card.scryfall_id
                              for card in
                              self.db.get_cards_in_expansion(code)]
 
         if None in previous_card_ids:
-            print('None is stored as a scryfall_id!')
+            self.logger.debug('None is stored as a scryfall_id!')
 
         new_cards = [card
                      for card in all_cards
                      if card.scryfall_id not in previous_card_ids]
 
-        print(f'Found {len(new_cards)} new cards')
+        self.logger.debug(f'Found {len(new_cards)} new cards')
 
         if post_to_slack:
             new_cards = self.slack.post_cards(new_cards)
         else:
-            print('Skipping post to slack')
+            self.logger.debug('Skipping post to slack')
 
         new_cards_db = [CardDbModel(
                 name=card.name,
@@ -130,11 +130,11 @@ class Manager:
 
     def show_watched(self):
         for expansion in self.db.get_watched_expansions():
-            print(f'Watching {str(expansion)}')
+            self.logger.debug(f'Watching {str(expansion)}')
     
     def show_cards(self, args):
         for card in self.db.get_cards_in_expansion(args[0]):
-            print(card)
+            self.logger.debug(card)
 
     def init_db(self, args):
         self.refresh_sets()
