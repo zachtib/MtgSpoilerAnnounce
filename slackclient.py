@@ -35,6 +35,12 @@ class SlackClient:
     def batch_enabled(self):
         return self.batch_threshold > 0 and self.batch_channel is not None
 
+    def post_message(self, msg: str):
+        self.logger.debug(f'Posting "{msg}" to #{self.channel}')
+        return self._post(self.channel, {
+            'text': msg,
+        })
+
     def post_cards(self, cards: List[Card]) -> List[Card]:
         if self.batch_enabled and len(cards) >= self.batch_threshold:
             return self._post_batch(cards)

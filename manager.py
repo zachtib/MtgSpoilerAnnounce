@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, datetime
 from inspect import signature
 from logging import Logger
 from typing import List
@@ -71,18 +71,25 @@ class Manager:
         self.db.unwatch_expansions(codes)
 
     def refresh_sets(self):
+        self.db.unwatch_released_expansions()
         known_set_codes = [s.code for s in self.db.get_all_expansions()]
         api_sets = self.api.get_all_sets()
         new_sets = [s for s in api_sets if s.code not in known_set_codes]
         print(f'Found {len(new_sets)} new sets')
-        exps = [ExpansionDbModel(
+        exps = []
+        for e in new_sets:
+            self.slack.post_message(f'Found new set: {e.name}')
+            released_at = datetime.strptime(e.released_at, '%Y-%m-%d').date()
+            new_set = ExpansionDbModel(
                     name=e.name,
                     code=e.code,
                     kind="",
                     watched=True,
-                    release_date=date.today(),  # TODO: Parse the date from API
+                    release_date=released_at,
                     scryfall_id=e.scryfall_id
-                ) for e in new_sets]
+                )
+            exps.append(new_set)
+
         self.db.insert_expansions(exps)
 
     def refresh(self, args):

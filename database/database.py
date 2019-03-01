@@ -1,3 +1,4 @@
+from datetime import date
 from logging import Logger
 from typing import List
 
@@ -43,6 +44,14 @@ class Database:
 
     def unwatch_expansions(self, codes: List[str]):
         expansions = self.session.query(Expansion).filter(Expansion.code.in_(codes)).all()
+        for e in expansions:
+            self.logger.debug(f'Unwatching {e.name}')
+            e.watched = False
+            self.session.add(e)
+        self.session.commit()
+
+    def unwatch_released_expansions(self):
+        expansions = self.session.query(Expansion).filter(Expansion.release_date < date.today())
         for e in expansions:
             self.logger.debug(f'Unwatching {e.name}')
             e.watched = False

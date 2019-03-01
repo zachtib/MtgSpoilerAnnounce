@@ -33,7 +33,8 @@ def expansion_from_json(json: dict) -> Expansion:
         return Expansion(
             name=json['name'],
             code=json['code'],
-            scryfall_id=json['id']
+            scryfall_id=json['id'],
+            released_at=json['released_at']
         )
     except KeyError as error:
         print(f'Error parsing: ' + str(json))
