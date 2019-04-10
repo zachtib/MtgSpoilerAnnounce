@@ -9,10 +9,12 @@ from config import MtgSpoilerConfig
 from models import Card
 
 p = re.compile(r'{(\w+)}')
+hybrid = re.compile(r'{(\w+)/(\w+)}')
 
 
 def format_mana(manacost: str) -> str:
-    return p.sub(r":mana-\1:", manacost)
+    phase1 = hybrid.sub(r':mana-\1\2:', manacost)
+    return p.sub(r":mana-\1:", phase1)
 
 
 class SlackClient:
@@ -84,3 +86,10 @@ class SlackClient:
     @staticmethod
     def _is_card_english(card):
         return not (card.name[0] == '"' and card.name[-1] == '"')
+
+
+if __name__ == '__main__':
+    def debugprint(manacost):
+        print(f'"{manacost}" -> "{format_mana(manacost)}"')
+    debugprint("{2}{W}{W}")
+    debugprint("{2}{U/R}")
