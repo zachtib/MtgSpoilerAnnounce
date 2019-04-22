@@ -47,7 +47,8 @@ def expansion_from_json(json: dict) -> Expansion:
             name=json['name'],
             code=json['code'],
             scryfall_id=json['id'],
-            released_at=json['released_at']
+            released_at=json['released_at'],
+            set_type=json['set_type']
         )
     except KeyError as error:
         logger.debug(f'Error parsing: ' + str(json))

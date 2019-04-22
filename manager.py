@@ -80,11 +80,12 @@ class Manager:
         for e in new_sets:
             self.slack.post_message(f'Found new set: {e.name}')
             released_at = datetime.strptime(e.released_at, '%Y-%m-%d').date()
+            should_watch = released_at > datetime.now()
             new_set = ExpansionDbModel(
                     name=e.name,
                     code=e.code,
-                    kind="",
-                    watched=True,
+                    kind=e.set_type,
+                    watched=should_watch,
                     release_date=released_at,
                     scryfall_id=e.scryfall_id
                 )

@@ -7,3 +7,4 @@ class Expansion:
     code: str
     scryfall_id: str
     released_at: str
+    set_type: str
