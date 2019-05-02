@@ -104,16 +104,23 @@ class Manager:
         self.logger.debug(f'Refreshing {code}')
         all_cards = self.api.get_cards_from_set(code)
         self.logger.debug(f'API returned {len(all_cards)} cards for {code}')
-        previous_card_ids = [card.scryfall_id
-                             for card in
-                             self.db.get_cards_in_expansion(code)]
 
-        if None in previous_card_ids:
+        cards_in_expansion = self.db.get_cards_in_expansion(code)
+
+        old_names = [card.name for card in cards_in_expansion]
+        old_ids = [card.scryfall_id for card in cards_in_expansion]
+
+        if None in old_ids:
             self.logger.debug('None is stored as a scryfall_id!')
 
-        new_cards = [card
-                     for card in all_cards
-                     if card.scryfall_id not in previous_card_ids]
+        def is_card_new(card):
+            if card.name in old_names:
+                return False
+            if card.scryfall_id in old_ids:
+                return False
+            return True
+
+        new_cards = list(filter(is_card_new, all_cards))
 
         self.logger.debug(f'Found {len(new_cards)} new cards')
 
