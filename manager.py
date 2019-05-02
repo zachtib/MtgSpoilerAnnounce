@@ -78,9 +78,10 @@ class Manager:
         self.logger.debug(f'Found {len(new_sets)} new sets')
         exps = []
         for e in new_sets:
-            self.slack.post_message(f'Found new set: {e.name}')
             released_at = datetime.strptime(e.released_at, '%Y-%m-%d').date()
             should_watch = released_at > datetime.now()
+            if should_watch:
+                self.slack.post_message(f'Found new set: {e.name}')
             new_set = ExpansionDbModel(
                     name=e.name,
                     code=e.code,
