@@ -74,7 +74,16 @@ class Manager:
         self.db.unwatch_released_expansions()
         known_set_codes = [s.code for s in self.db.get_all_expansions()]
         api_sets = self.api.get_all_sets()
-        new_sets = [s for s in api_sets if s.code not in known_set_codes]
+
+        def is_set_new(s):
+            if s.code in known_set_codes:
+                return False
+            if s.released_at < datetime.now():
+                return False
+            return True
+
+        new_sets = [s for s in api_sets if is_set_new(s)]
+
         self.logger.debug(f'Found {len(new_sets)} new sets')
         exps = []
         for e in new_sets:
