@@ -70,6 +70,24 @@ class Manager:
         self.logger.debug(f'Unwatching  {codes}')
         self.db.unwatch_expansions(codes)
 
+    def force_refresh_sets(self):
+        existing_sets = self.db.get_all_expansions()
+        api_sets = self.api.get_all_sets()
+
+        to_update = []
+        for expansion in existing_sets:
+            filtered = list(filter(lambda e: e.scryfall_id == expansion.scryfall_id, api_sets))
+            if len(filtered) == 1:
+                api_set = filtered[0]
+                expansion.name = api_set.name
+                expansion.release_date = api_set.released_at
+                expansion.code = api_set.code
+                expansion.kind = api_set.set_type
+                to_update.append(expansion)
+            else:
+                self.logger.debug(f'Could not match: {expansion.name}')
+        self.db.insert_expansions(to_update)
+
     def refresh_sets(self):
         self.db.unwatch_released_expansions()
         known_set_codes = [s.code for s in self.db.get_all_expansions()]
