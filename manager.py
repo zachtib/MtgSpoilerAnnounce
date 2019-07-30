@@ -96,7 +96,8 @@ class Manager:
         def is_set_new(s):
             if s.code in known_set_codes:
                 return False
-            if s.released_at < datetime.now():
+            dt = datetime.strptime(s.released_at, '%Y-%m-%d')
+            if dt < datetime.now():
                 return False
             return True
 
