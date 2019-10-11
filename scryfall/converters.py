@@ -17,16 +17,25 @@ logger.addHandler(handler)
 def card_from_json(json: dict) -> Card:
     try:
         oracle_text = json.get('oracle_text', None)
+        image_uri = ""
+        try:
+            image_uri = json["image_uris"]["normal"]
+        except KeyError as e:
+            pass
         if oracle_text is None:
             if 'card_faces' in json.keys():
                 faces = json['card_faces']
                 faces_text = [face['oracle_text'] for face in faces]
                 oracle_text = '\n//\n'.join(faces_text)
+                try:
+                    image_uri = json['card_faces'][0]["image_uris"]["normal"]
+                except KeyError as e:
+                    logger.error(e)
             else:
                 oracle_text = 'Error parsing oracle text'
         return Card(
             name=json['name'],
-            image_url=json["image_uris"]["normal"],
+            image_url=image_uri,
             source_url=json["scryfall_uri"].split('?')[0],
             mana_cost=json['mana_cost'],
             type_line=json['type_line'],
